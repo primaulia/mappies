@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import {
   Title,
   SubTitle
@@ -8,12 +8,30 @@ import {
 const Directions = styled.div`
   display: inline-block; 
   vertical-align: top;
-  width: 20%; 
+  width: 26%; 
 `
 
-const ul = styled.ul`
+const StyledUl = styled.ul`
   list-style: square; 
 `
+
+const roundDistance = (distance) => {
+  return Math.round(distance / 50) * 50;
+}
+
+const roundTime = (duration) => {
+  return Math.floor(duration/60)
+}
+
+const legSummary = ({distance, duration}) => {
+  if(roundDistance(duration) === 0 && roundTime(duration) === 0) return ''
+
+  if (roundTime(duration) <= 0) {
+    return ` for about ${roundDistance(distance)} meters`
+  } else {
+    return ` for about ${roundTime(duration)} minute(s)`
+  }
+}
 
 
 export default (
@@ -23,7 +41,9 @@ export default (
 ) => {
   const instructions = steps && steps.map((step, index) => {
     return (
-      <li key={index}>{step.maneuver.instruction}</li>
+      <li key={index}>
+        {step.maneuver.instruction}{legSummary(step)}
+      </li>
     )
   })
 
@@ -32,9 +52,9 @@ export default (
       <Directions>
         <Title is="3">Directions</Title>
         <SubTitle>{summary.split(',').join(' - ')}</SubTitle>
-        <ul>
+        <StyledUl>
           { instructions }
-        </ul>
+        </StyledUl>
       </Directions>
     )
   } else {

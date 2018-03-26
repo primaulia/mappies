@@ -42,7 +42,7 @@ class App extends React.Component {
   
   mapboxGeocoding = (query, nearbySearch) => {
     const params = {
-      types: nearbySearch ? 'poi.landmark' : 'address,poi',
+      types: nearbySearch ? 'poi.landmark' : 'address,poi,locality,place,district,postcode',
       limit: nearbySearch ? 3 : 1,
       access_token: MAPTOKEN,
       country: 'sg',
@@ -62,6 +62,20 @@ class App extends React.Component {
     return `${DIRECTIONURL}${encodeURIComponent(`${c1};${c2}`)}.json?${serialize(params)}`;
   }
 
+  orientate(center, zoom = 11) {
+    this.setState({
+      mapConfig: {
+        containerStyle: {
+          height: "80vh",
+          width: "70%"
+        },
+        style: "mapbox://styles/mapbox/streets-v9",
+        zoom: [zoom],
+        center,
+      },
+    }); 
+  }
+  
   async whereAmI(query = '8 Claymore Hill', zoomFactor) {
     if(query === '') return
 
@@ -78,20 +92,6 @@ class App extends React.Component {
         this.orientate(center, zoomFactor)
       }
     }
-  }
-
-  orientate(center, zoom = 11) {
-    this.setState({
-      mapConfig: {
-        containerStyle: {
-          height: "80vh",
-          width: "75%"
-        },
-        style: "mapbox://styles/mapbox/streets-v9",
-        zoom: [zoom],
-        center,
-      },
-    }); 
   }
 
   async populateLandmarks(center) {
@@ -131,9 +131,6 @@ class App extends React.Component {
           steps
         }
       })
-  
-      console.log(summary)
-      console.log(steps)
     }
   }
 
@@ -156,19 +153,21 @@ class App extends React.Component {
   }
 
   handleClick = (destinationCoordinate) => {
-    console.log(`center: ${this.state.mapConfig.center}`)
-    console.log(`destinationCoordinate: ${destinationCoordinate}`)
     const startCoordinate = this.state.mapConfig.center
     this.getDirection(startCoordinate, destinationCoordinate)
   }
 
   render() {
     const { mapConfig, pois, directions } = this.state
-    const poiComp = pois.map(({ id, name, center }) =>
-      <Marker key={id} coordinates={center}>
-        <Destination coordinate={center} emit={this.handleClick} />
-      </Marker>
-    )
+    const poiComps = pois.map(({ id, text, center }) => {      
+      return (
+        <Marker key={id} coordinates={center}>
+          <Destination coordinate={center} emit={this.handleClick}>
+            {text}
+          </Destination>
+        </Marker>
+      )
+    })
 
     return (
       <div>
@@ -182,7 +181,7 @@ class App extends React.Component {
                     <Mark />
                   </Marker>
 
-                  {poiComp}
+                  {poiComps}
                 </StyledMap>
               }
               <Directions directions={directions} />

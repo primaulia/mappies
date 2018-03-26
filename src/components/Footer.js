@@ -10,7 +10,7 @@ export default () => {
     <Hero primary as="section">
       <Hero.Body>
         <Container fluid>
-          <Title as="h1">Mappies</Title>
+          <Title as="h1">WalkyMappy</Title>
         </Container>
       </Hero.Body>
     </Hero>
