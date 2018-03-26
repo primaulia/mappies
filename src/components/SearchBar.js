@@ -9,7 +9,7 @@ export default (props) => {
       id="search"
       medium
       type="text"
-      placeholder="Where are you?"
+      placeholder="Where are you? (e.g. 1 Raffles Quay)"
       onChange={e => props.onSearch(e.target.value)}
     />
   )
