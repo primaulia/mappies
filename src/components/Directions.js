@@ -1,9 +1,6 @@
 import React from 'react'
-import styled from 'styled-components';
-import {
-  Title,
-  SubTitle
-} from 'reactbulma'
+import styled from 'styled-components'
+import { Title } from 'reactbulma'
 
 const Directions = styled.div`
   display: inline-block; 
@@ -23,20 +20,20 @@ const roundTime = (duration) => {
   return Math.floor(duration/60)
 }
 
-const legSummary = ({distance, duration}) => {
+const legSummary = ({distance, duration, maneuver}) => {
   if(roundDistance(duration) === 0 && roundTime(duration) === 0) return ''
 
-  if (roundTime(duration) <= 0) {
-    return ` for about ${roundDistance(distance)} meters`
-  } else {
+  if (maneuver.instruction.includes('Head')) {
     return ` for about ${roundTime(duration)} minute(s)`
+  } else {
+    return ` for about ${roundDistance(distance)} meters`
   }
 }
 
 
 export default (
   {directions: 
-    { summary, steps }
+    { summary, steps, name }
   }
 ) => {
   const instructions = steps && steps.map((step, index) => {
@@ -47,11 +44,10 @@ export default (
     )
   })
 
-  if(summary) {
+  if(steps) {
     return (
       <Directions>
-        <Title is="3">Directions</Title>
-        <SubTitle>{summary.split(',').join(' - ')}</SubTitle>
+        <Title is="3">{name}</Title>
         <StyledUl>
           { instructions }
         </StyledUl>

@@ -114,7 +114,7 @@ class App extends React.Component {
     }
   }
 
-  async getDirection(c1, c2) {
+  async getDirection(c1, c2, name) {
     const response = await fetch(
       req(
         this.mapboxDirection(c1, c2)
@@ -124,11 +124,12 @@ class App extends React.Component {
     if(data) {
       const { legs } = data.routes[0]
       const { summary, steps } = legs[0]
-
+      
       this.setState({
         directions: {
           summary,
-          steps
+          steps,
+          name
         }
       })
     }
@@ -152,9 +153,9 @@ class App extends React.Component {
     
   }
 
-  handleClick = (destinationCoordinate) => {
+  handleClick = (destinationCoordinate, destinationName) => {
     const startCoordinate = this.state.mapConfig.center
-    this.getDirection(startCoordinate, destinationCoordinate)
+    this.getDirection(startCoordinate, destinationCoordinate, destinationName)
   }
 
   render() {
@@ -162,8 +163,8 @@ class App extends React.Component {
     const poiComps = pois.map(({ id, text, center }) => {      
       return (
         <Marker key={id} coordinates={center}>
-          <Destination coordinate={center} emit={this.handleClick}>
-            {text}
+          <Destination coordinate={center} emit={this.handleClick} name={text}>
+            {/* {text} */}
           </Destination>
         </Marker>
       )

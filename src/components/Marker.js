@@ -6,9 +6,9 @@ const blink = keyframes`
   to { opacity: 0; }
 `
 
-const MarkTemplate = ({className, emit, coordinate, children}) => (
-  <div className={className}  onClick={(e) => emit(coordinate)}>
-    {children}
+const MarkTemplate = ({className, emit, coordinate, name}) => (
+  <div className={className}  onClick={(e) => emit(coordinate, name)}>
+    {/* {children} */}
   </div>
 )
 
@@ -30,8 +30,8 @@ const Mark = styled(MarkTemplate)`
 const Destination = Mark.extend`
   background-color: #FFD23F;
   border: 4px solid #FFE696;
-  width: 50px;
-  height: 50px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   border-radius: 20%;
   padding: 10px;
